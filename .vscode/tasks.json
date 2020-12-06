@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "npm",
+            "script": "build:dev",
+            "group": "build",
+            "problemMatcher": [],
+            "label": "npm: build:dev",
+            "detail": "tsc -p tsconfig.dev.json"
+        },
+        {
+            "type": "npm",
+            "script": "build:prod",
+            "group": "build",
+            "problemMatcher": [],
+            "label": "npm: build:prod",
+            "detail": "tsc -p tsconfig.json"
+        }
+    ]
+}
