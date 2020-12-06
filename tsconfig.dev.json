@@ -1,0 +1,8 @@
+{
+  "extends": "./config/tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dev-dist",
+    "sourceMap": true
+  },
+  "include": ["./src"]
+}
