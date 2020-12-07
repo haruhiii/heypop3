@@ -32,5 +32,7 @@
     "prettier": "^2.2.1",
     "typescript": "^4.1.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "iconv-lite": "^0.6.2"
+  }
 }
