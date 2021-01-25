@@ -28,7 +28,10 @@ export default class POP3Client {
         this.timeout = timeout || 10000
         this.client = new net.Socket()
     }
-    private waitFor(action: ActionType, param?: string | number | string[]) {
+    private waitFor(
+        action: ActionType,
+        param?: string | number | string[] | number[]
+    ) {
         return new Promise((resolve: (args: string) => void, reject) => {
             const timer = setTimeout(() => {
                 reject(new Error('timeout waiting for response'))
@@ -37,7 +40,7 @@ export default class POP3Client {
             this.client.once('data', onData)
             function onData(data: Buffer) {
                 clearTimeout(timer)
-                const dataString = iconv.decode(data, 'gbk')
+                const dataString = iconv.decode(data, 'utf-8')
                 console.log(dataString)
                 if (dataString.substr(0, 3) === '+OK') {
                     resolve(dataString.substr(4))
@@ -65,6 +68,12 @@ export default class POP3Client {
                 case 'RETR':
                     this.client.write('RETR ' + param + '\r\n')
                     break
+                case 'TOP':
+                    this.client.write('TOP ' + param + '\r\n')
+                    break
+                case 'UIDL':
+                    this.client.write('UIDL ' + param + '\r\n')
+                    break
                 default:
                     break
             }
@@ -79,12 +88,33 @@ export default class POP3Client {
     }
     public async login(email: string, password: string) {
         await this.waitFor('USER', email)
-        return await this.waitFor('PASS', password)
+        let message = 'Login successfully. Message: '
+        try {
+            message += await this.waitFor('PASS', password)
+        } catch (error) {
+            throw new Error(`Login failed. Message: ${error}`)
+        }
+        return message
     }
     public async status() {
         return await this.waitFor('STAT')
     }
     public async list() {
         return await this.waitFor('LIST')
+    }
+    public async stat() {
+        return await this.waitFor('STAT')
+    }
+    public async uidl(id: number) {
+        return await this.waitFor('UIDL', `${id}`)
+    }
+    public async retr(id: number) {
+        return await this.waitFor('RETR', `${id}`)
+    }
+    public async top(id: number, line: number) {
+        return await this.waitFor('TOP', `${id} ${line}`)
+    }
+    public async quit() {
+        return await this.waitFor('QUIT')
     }
 }

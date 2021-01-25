@@ -8,5 +8,7 @@ module.exports = {
     },
     testPathIgnorePatterns: ['/node_modules/'],
     displayName: 'TEST',
-    verbose: true
+    verbose: true,
+    testTimeout: 10000
+
 }
